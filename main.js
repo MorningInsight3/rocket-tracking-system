@@ -17,13 +17,19 @@ import L from 'leaflet';
 // 导入多语言支持
 import { t, setLanguage, getCurrentLanguage, updatePageText } from './i18n.js';
 
+// 导入城市数据
+import { worldCities, getCityCoords, getCityName } from './cities.js';
+
+// 导入火箭数据
+import { rockets, getRocketInfo, getRocketName } from './rockets.js';
+
 // 等待 DOM 加载完成
 document.addEventListener('DOMContentLoaded', () => {
   // 初始化多语言支持
   initI18n();
   
   // 初始化地图
-  const map = L.map('map').setView([35.0, 105.0], 4); // 中国中心位置
+  const map = L.map('map').setView([35.0, 105.0], 2); // 世界中心位置，缩放级别调整为2
 
   // 添加地图图层
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -46,30 +52,63 @@ document.addEventListener('DOMContentLoaded', () => {
   let launchMarker = null;
   let targetMarker = null;
 
-  // 模拟数据
-  const rocketTypes = {
-    '1': { name: t('cz5'), speed: 7500, maxAltitude: 500 },
-    '2': { name: t('cz7'), speed: 7800, maxAltitude: 450 },
-    '3': { name: t('cz11'), speed: 8000, maxAltitude: 550 }
-  };
-
   // 预设发射地点
   const launchSites = {
-    [t('jqSite')]: [40.9606, 100.2979],
-    [t('xcSite')]: [28.2463, 102.0269],
-    [t('wcSite')]: [19.6145, 110.9510]
+    'jqSite': [40.9606, 100.2979],
+    'xcSite': [28.2463, 102.0269],
+    'wcSite': [19.6145, 110.9510]
+  };
+  
+  // 天气条件及其影响
+  const weatherConditions = {
+    'clear': { 
+      icon: '☀️', 
+      impact: 'none',
+      speedModifier: 1.0,
+      altitudeModifier: 1.0,
+      launchSafe: true
+    },
+    'cloudy': { 
+      icon: '☁️', 
+      impact: 'minor',
+      speedModifier: 0.95,
+      altitudeModifier: 0.98,
+      launchSafe: true
+    },
+    'rainy': { 
+      icon: '🌧️', 
+      impact: 'moderate',
+      speedModifier: 0.85,
+      altitudeModifier: 0.9,
+      launchSafe: true
+    },
+    'windy': { 
+      icon: '💨', 
+      impact: 'moderate',
+      speedModifier: 0.8,
+      altitudeModifier: 0.85,
+      launchSafe: true
+    },
+    'thunder': { 
+      icon: '⛈️', 
+      impact: 'severe',
+      speedModifier: 0.7,
+      altitudeModifier: 0.75,
+      launchSafe: false
+    }
   };
 
   // 获取DOM元素
-  const rocketNameInput = document.getElementById('rocket-name');
-  const launchSiteInput = document.getElementById('launch-site');
-  const targetSiteInput = document.getElementById('target-site');
-  const rocketTypeSelect = document.getElementById('rocket-type');
+  const rocketTypeSelect = document.getElementById('rocket-type-select');
+  const launchSiteSelect = document.getElementById('launch-site-select');
+  const targetSiteSelect = document.getElementById('target-site-select');
+  const weatherSelect = document.getElementById('weather-select');
   const launchBtn = document.getElementById('launch-btn');
   const resetBtn = document.getElementById('reset-btn');
   const launchDialog = document.getElementById('launch-dialog');
   const cancelLaunchBtn = document.getElementById('cancel-launch');
   const confirmLaunchBtn = document.getElementById('confirm-launch');
+  const weatherWarningCard = document.getElementById('weather-warning-card');
   
   // 状态显示元素
   const rocketStatus = document.getElementById('rocket-status');
@@ -77,11 +116,99 @@ document.addEventListener('DOMContentLoaded', () => {
   const rocketAltitude = document.getElementById('rocket-altitude');
   const flightTime = document.getElementById('flight-time');
   const currentLocation = document.getElementById('current-location');
+  const weatherIcon = document.getElementById('weather-icon');
+  const weatherCondition = document.getElementById('weather-condition');
+  const weatherImpact = document.getElementById('weather-impact');
+  
+  // 火箭详情元素
+  const rocketNameDisplay = document.getElementById('rocket-name-display');
+  const rocketPayload = document.getElementById('rocket-payload');
+  const rocketFirstFlight = document.getElementById('rocket-first-flight');
+  const rocketStatusDetail = document.getElementById('rocket-status-detail');
+  const rocketCountry = document.getElementById('rocket-country');
+  const rocketSpeedDetail = document.getElementById('rocket-speed-detail');
+  const rocketAltitudeDetail = document.getElementById('rocket-altitude-detail');
 
   // 模拟火箭发射
   let rocketSimulation = null;
   let startTime = null;
   let isLaunched = false;
+  
+  // 初始化天气状态
+  updateWeatherDisplay();
+  
+  // 天气选择变更事件
+  weatherSelect.addEventListener('change', () => {
+    updateWeatherDisplay();
+  });
+  
+  // 火箭类型选择变更事件
+  rocketTypeSelect.addEventListener('change', () => {
+    updateRocketDetails();
+  });
+  
+  // 更新天气显示
+  function updateWeatherDisplay() {
+    const selectedWeather = weatherSelect.value;
+    const weather = weatherConditions[selectedWeather];
+    
+    // 更新天气图标和状态
+    weatherIcon.textContent = weather.icon;
+    weatherCondition.textContent = t('weather' + capitalizeFirstLetter(selectedWeather));
+    weatherImpact.textContent = t('impact' + capitalizeFirstLetter(weather.impact));
+    
+    // 更新天气影响样式
+    weatherImpact.className = '';
+    weatherImpact.classList.add('impact-' + weather.impact);
+    
+    // 显示或隐藏天气警告
+    if (!weather.launchSafe) {
+      weatherWarningCard.style.display = 'block';
+    } else {
+      weatherWarningCard.style.display = 'none';
+    }
+  }
+  
+  // 更新火箭详情
+  function updateRocketDetails() {
+    const rocketId = rocketTypeSelect.value;
+    
+    if (!rocketId) {
+      // 清空详情
+      rocketNameDisplay.textContent = '--';
+      rocketPayload.textContent = '--';
+      rocketFirstFlight.textContent = '--';
+      rocketStatusDetail.textContent = '--';
+      rocketCountry.textContent = '--';
+      rocketSpeedDetail.textContent = '--';
+      rocketAltitudeDetail.textContent = '--';
+      
+      // 移除所有类名
+      rocketStatusDetail.className = '';
+      rocketCountry.className = '';
+      return;
+    }
+    
+    const rocket = getRocketInfo(rocketId);
+    
+    // 更新详情
+    rocketNameDisplay.textContent = t(rocketId);
+    rocketPayload.textContent = rocket.payload;
+    rocketFirstFlight.textContent = rocket.firstFlight;
+    rocketStatusDetail.textContent = t(rocket.status);
+    rocketCountry.textContent = t(rocket.country + 'Rockets');
+    rocketSpeedDetail.textContent = `${rocket.speed} km/h`;
+    rocketAltitudeDetail.textContent = `${rocket.maxAltitude} km`;
+    
+    // 添加样式类
+    rocketStatusDetail.className = 'status-' + rocket.status;
+    rocketCountry.className = 'country-' + rocket.country;
+  }
+  
+  // 首字母大写
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
   // 发射按钮点击事件
   launchBtn.addEventListener('click', () => {
@@ -93,6 +220,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!validateInputs()) {
       showMessage(t('fillAllInfo'));
       return;
+    }
+    
+    // 检查天气条件
+    const selectedWeather = weatherSelect.value;
+    const weather = weatherConditions[selectedWeather];
+    
+    // 如果天气不安全，显示警告但仍允许发射
+    if (!weather.launchSafe) {
+      if (!confirm(t('weatherWarning'))) {
+        return;
+      }
     }
     
     launchDialog.open = true;
@@ -116,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 验证输入
   function validateInputs() {
-    return rocketNameInput.value && launchSiteInput.value && targetSiteInput.value && rocketTypeSelect.value;
+    return rocketTypeSelect.value && launchSiteSelect.value && targetSiteSelect.value;
   }
 
   // 显示消息
@@ -124,28 +262,57 @@ document.addEventListener('DOMContentLoaded', () => {
     alert(message);
   }
 
+  // 获取发射地点坐标
+  function getLaunchCoords() {
+    const launchSiteValue = launchSiteSelect.value;
+    
+    // 检查是否是预设发射场
+    if (launchSites[launchSiteValue]) {
+      return launchSites[launchSiteValue];
+    }
+    
+    // 检查是否是城市
+    return getCityCoords(launchSiteValue);
+  }
+  
+  // 获取目标地点坐标
+  function getTargetCoords() {
+    const targetSiteValue = targetSiteSelect.value;
+    return getCityCoords(targetSiteValue);
+  }
+  
+  // 获取地点显示名称
+  function getSiteDisplayName(siteValue) {
+    // 检查是否是预设发射场
+    if (launchSites[siteValue]) {
+      return t(siteValue);
+    }
+    
+    // 否则是城市
+    return t(siteValue);
+  }
+
   // 开始火箭发射
   function startRocketLaunch() {
     // 获取输入值
-    const rocketName = rocketNameInput.value;
-    const launchSiteName = launchSiteInput.value;
-    const targetSiteName = targetSiteInput.value;
     const rocketTypeId = rocketTypeSelect.value;
+    const launchSiteValue = launchSiteSelect.value;
+    const targetSiteValue = targetSiteSelect.value;
+    const selectedWeather = weatherSelect.value;
     
-    // 获取发射点坐标（预设或随机）
-    let launchCoords = launchSites[launchSiteName];
-    if (!launchCoords) {
-      launchCoords = [
-        30 + Math.random() * 15,
-        100 + Math.random() * 20
-      ];
+    // 获取发射点和目标点坐标
+    const launchCoords = getLaunchCoords();
+    const targetCoords = getTargetCoords();
+    
+    if (!launchCoords || !targetCoords) {
+      showMessage('无法获取坐标信息');
+      return;
     }
     
-    // 获取目标点坐标（随机）
-    const targetCoords = [
-        10 + Math.random() * 40,
-        70 + Math.random() * 60
-    ];
+    // 获取显示名称
+    const launchSiteName = getSiteDisplayName(launchSiteValue);
+    const targetSiteName = getSiteDisplayName(targetSiteValue);
+    const rocketName = t(rocketTypeId);
     
     // 添加发射点和目标点标记
     if (launchMarker) map.removeLayer(launchMarker);
@@ -179,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 创建火箭标记
     if (rocketMarker) map.removeLayer(rocketMarker);
     rocketMarker = L.marker(launchCoords, { icon: rocketIcon }).addTo(map)
-      .bindPopup(`${rocketName}<br>${t('rocketType')}: ${rocketTypes[rocketTypeId].name}`);
+      .bindPopup(`${rocketName}<br>${t('rocketType')}: ${t(rocketTypeId)}`);
     
     // 调整地图视图
     map.fitBounds([launchCoords, targetCoords], { padding: [50, 50] });
@@ -189,17 +356,31 @@ document.addEventListener('DOMContentLoaded', () => {
     isLaunched = true;
     startTime = Date.now();
     
+    // 获取天气修正因子
+    const weather = weatherConditions[selectedWeather];
+    
+    // 获取火箭信息
+    const rocket = getRocketInfo(rocketTypeId);
+    
     // 开始模拟
     const totalDistance = calculateDistance(launchCoords, targetCoords);
-    const rocketType = rocketTypes[rocketTypeId];
-    const duration = (totalDistance / rocketType.speed) * 3600000; // 毫秒
+    
+    // 应用天气影响到火箭性能
+    const modifiedSpeed = rocket.speed * weather.speedModifier;
+    const modifiedAltitude = rocket.maxAltitude * weather.altitudeModifier;
+    
+    const duration = (totalDistance / modifiedSpeed) * 3600000; // 毫秒
     
     // 模拟火箭飞行
     rocketSimulation = simulateRocketFlight(
       launchCoords,
       targetCoords,
       duration,
-      rocketType
+      {
+        name: rocket.name,
+        speed: modifiedSpeed,
+        maxAltitude: modifiedAltitude
+      }
     );
   }
 
@@ -332,40 +513,15 @@ document.addEventListener('DOMContentLoaded', () => {
     isLaunched = false;
     
     // 重置表单
-    rocketNameInput.value = '';
-    launchSiteInput.value = '';
-    targetSiteInput.value = '';
     rocketTypeSelect.value = '';
+    launchSiteSelect.value = '';
+    targetSiteSelect.value = '';
+    
+    // 重置火箭详情
+    updateRocketDetails();
     
     // 重置地图视图
-    map.setView([35.0, 105.0], 4);
-  }
-
-  // 初始化自动完成
-  function initAutocomplete() {
-    // 这里可以添加发射地点的自动完成功能
-    launchSiteInput.addEventListener('focus', () => {
-      const datalist = document.createElement('datalist');
-      datalist.id = 'launch-sites';
-      
-      // 根据当前语言获取发射地点
-      const sites = [t('jqSite'), t('xcSite'), t('wcSite')];
-      
-      for (const site of sites) {
-        const option = document.createElement('option');
-        option.value = site;
-        datalist.appendChild(option);
-      }
-      
-      // 移除旧的 datalist（如果存在）
-      const oldDatalist = document.getElementById('launch-sites');
-      if (oldDatalist) {
-        document.body.removeChild(oldDatalist);
-      }
-      
-      document.body.appendChild(datalist);
-      launchSiteInput.setAttribute('list', 'launch-sites');
-    });
+    map.setView([35.0, 105.0], 2);
   }
 
   // 初始化多语言支持
@@ -383,8 +539,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // 更新 HTML 语言属性
       document.documentElement.lang = newLang;
       
-      // 更新预设发射地点
-      initAutocomplete();
+      // 更新天气显示
+      updateWeatherDisplay();
+      
+      // 更新火箭详情
+      updateRocketDetails();
       
       // 如果火箭已经发射，更新状态文本
       if (isLaunched) {
@@ -397,7 +556,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初始更新页面文本
     updatePageText();
   }
-
-  // 初始化自动完成
-  initAutocomplete();
 });

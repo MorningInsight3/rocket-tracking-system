@@ -12,6 +12,19 @@
   --error-color: #ba1a1a;
   --success-color: #146c2e;
   --warning-color: #b86e00;
+  
+  /* 国家颜色 */
+  --china-color: #e60000;
+  --usa-color: #0052cc;
+  --russia-color: #6b4c9a;
+  --europe-color: #0065bd;
+  --japan-color: #bc002d;
+  --india-color: #ff9933;
+  
+  /* 状态颜色 */
+  --active-color: #388e3c;
+  --development-color: #f57c00;
+  --retired-color: #757575;
 }
 
 * {
@@ -163,6 +176,122 @@ html[lang="en-US"] {
 
 html[lang="ja-JP"] {
   font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* 选择器样式 */
+.weather-select, .city-select, .rocket-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+/* 城市选择器标签样式 */
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+/* 分类标题样式 */
+.rocket-category, .city-category {
+  font-weight: bold;
+  color: var(--primary-color);
+  background-color: #f5f5f5;
+  padding-left: 5px;
+}
+
+/* 火箭详情卡片样式 */
+.rocket-details-card {
+  margin-bottom: 20px;
+}
+
+.rocket-details-card .rocket-detail-item {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.rocket-details-card .detail-label {
+  font-weight: 500;
+  margin-right: 8px;
+  min-width: 100px;
+}
+
+/* 国家/机构样式 */
+.country-china {
+  color: var(--china-color);
+}
+
+.country-usa {
+  color: var(--usa-color);
+}
+
+.country-russia {
+  color: var(--russia-color);
+}
+
+.country-europe {
+  color: var(--europe-color);
+}
+
+.country-japan {
+  color: var(--japan-color);
+}
+
+.country-india {
+  color: var(--india-color);
+}
+
+/* 状态样式 */
+.status-active {
+  color: var(--active-color);
+}
+
+.status-development {
+  color: var(--development-color);
+}
+
+.status-retired {
+  color: var(--retired-color);
+}
+
+/* 天气警告卡片样式 */
+.weather-warning-card {
+  background-color: #fff3e0;
+  border-left: 4px solid var(--warning-color);
+}
+
+.warning-header h2 {
+  color: var(--warning-color);
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+/* 天气图标样式 */
+#weather-icon {
+  font-size: 1.5rem;
+}
+
+/* 天气影响样式 */
+.impact-none {
+  color: var(--success-color);
+}
+
+.impact-minor {
+  color: #2e7d32;
+}
+
+.impact-moderate {
+  color: var(--warning-color);
+}
+
+.impact-severe {
+  color: var(--error-color);
 }
 
 @media (max-width: 768px) {

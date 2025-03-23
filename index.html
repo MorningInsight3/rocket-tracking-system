@@ -31,31 +31,190 @@
           </div>
           <div class="card-divider"></div>
           <div class="card-content">
+            <!-- 火箭类型选择 -->
             <div class="form-group">
-              <md-filled-text-field label="火箭名称" id="rocket-name" data-i18n-attr='{"label":"rocketName"}'></md-filled-text-field>
+              <label for="rocket-type-select" data-i18n="rocketType">火箭类型</label>
+              <select id="rocket-type-select" class="rocket-select">
+                <option value="" data-i18n="selectRocket">选择火箭</option>
+                <!-- 中国火箭 -->
+                <option value="" disabled class="rocket-category" data-i18n="chinaRockets">中国火箭</option>
+                <option value="cz5" data-i18n="cz5">长征五号</option>
+                <option value="cz7" data-i18n="cz7">长征七号</option>
+                <option value="cz11" data-i18n="cz11">长征十一号</option>
+                
+                <!-- 美国火箭 -->
+                <option value="" disabled class="rocket-category" data-i18n="usaRockets">美国火箭</option>
+                <option value="falcon9" data-i18n="falcon9">Falcon 9</option>
+                <option value="falconheavy" data-i18n="falconheavy">Falcon Heavy</option>
+                <option value="starship" data-i18n="starship">Starship</option>
+                <option value="sls" data-i18n="sls">太空发射系统 (SLS)</option>
+                <option value="saturn5" data-i18n="saturn5">土星五号</option>
+                <option value="shuttle" data-i18n="shuttle">航天飞机</option>
+                
+                <!-- 俄罗斯火箭 -->
+                <option value="" disabled class="rocket-category" data-i18n="russiaRockets">俄罗斯火箭</option>
+                <option value="soyuz" data-i18n="soyuz">联盟号</option>
+                <option value="proton" data-i18n="proton">质子号</option>
+                
+                <!-- 欧洲火箭 -->
+                <option value="" disabled class="rocket-category" data-i18n="europeRockets">欧洲火箭</option>
+                <option value="ariane5" data-i18n="ariane5">阿丽亚娜5号</option>
+                <option value="ariane6" data-i18n="ariane6">阿丽亚娜6号</option>
+                
+                <!-- 日本火箭 -->
+                <option value="" disabled class="rocket-category" data-i18n="japanRockets">日本火箭</option>
+                <option value="h2a" data-i18n="h2a">H-IIA</option>
+                <option value="h3" data-i18n="h3">H3</option>
+                
+                <!-- 印度火箭 -->
+                <option value="" disabled class="rocket-category" data-i18n="indiaRockets">印度火箭</option>
+                <option value="gslv" data-i18n="gslv">GSLV</option>
+              </select>
             </div>
+            
+            <!-- 发射地点选择 -->
             <div class="form-group">
-              <md-filled-text-field label="发射地点" id="launch-site" data-i18n-attr='{"label":"launchSite"}'></md-filled-text-field>
+              <label for="launch-site-select" data-i18n="launchSite">发射地点</label>
+              <select id="launch-site-select" class="city-select">
+                <option value="" data-i18n="selectCity">选择城市</option>
+                <option value="" disabled class="city-category">预设发射场</option>
+                <option value="jqSite" data-i18n="jqSite">酒泉卫星发射中心</option>
+                <option value="xcSite" data-i18n="xcSite">西昌卫星发射中心</option>
+                <option value="wcSite" data-i18n="wcSite">文昌航天发射场</option>
+                
+                <option value="" disabled class="city-category">亚洲</option>
+                <option value="beijing" data-i18n="beijing">北京</option>
+                <option value="shanghai" data-i18n="shanghai">上海</option>
+                <option value="tokyo" data-i18n="tokyo">东京</option>
+                <option value="seoul" data-i18n="seoul">首尔</option>
+                <option value="singapore" data-i18n="singapore">新加坡</option>
+                <option value="bangkok" data-i18n="bangkok">曼谷</option>
+                <option value="dubai" data-i18n="dubai">迪拜</option>
+                <option value="mumbai" data-i18n="mumbai">孟买</option>
+                <option value="hongkong" data-i18n="hongkong">香港</option>
+                
+                <option value="" disabled class="city-category">欧洲</option>
+                <option value="london" data-i18n="london">伦敦</option>
+                <option value="paris" data-i18n="paris">巴黎</option>
+                <option value="moscow" data-i18n="moscow">莫斯科</option>
+                <option value="berlin" data-i18n="berlin">柏林</option>
+                <option value="rome" data-i18n="rome">罗马</option>
+                <option value="madrid" data-i18n="madrid">马德里</option>
+                <option value="istanbul" data-i18n="istanbul">伊斯坦布尔</option>
+                
+                <option value="" disabled class="city-category">北美洲</option>
+                <option value="newyork" data-i18n="newyork">纽约</option>
+                <option value="losangeles" data-i18n="losangeles">洛杉矶</option>
+                <option value="toronto" data-i18n="toronto">多伦多</option>
+                <option value="mexicocity" data-i18n="mexicocity">墨西哥城</option>
+                
+                <option value="" disabled class="city-category">南美洲</option>
+                <option value="riodejaneiro" data-i18n="riodejaneiro">里约热内卢</option>
+                
+                <option value="" disabled class="city-category">非洲</option>
+                <option value="cairo" data-i18n="cairo">开罗</option>
+                <option value="capetown" data-i18n="capetown">开普敦</option>
+                
+                <option value="" disabled class="city-category">大洋洲</option>
+                <option value="sydney" data-i18n="sydney">悉尼</option>
+              </select>
             </div>
+            
+            <!-- 目标地点选择 -->
             <div class="form-group">
-              <md-filled-text-field label="目标地点" id="target-site" data-i18n-attr='{"label":"targetSite"}'></md-filled-text-field>
+              <label for="target-site-select" data-i18n="targetSite">目标地点</label>
+              <select id="target-site-select" class="city-select">
+                <option value="" data-i18n="selectCity">选择城市</option>
+                <option value="" disabled class="city-category">亚洲</option>
+                <option value="beijing" data-i18n="beijing">北京</option>
+                <option value="shanghai" data-i18n="shanghai">上海</option>
+                <option value="tokyo" data-i18n="tokyo">东京</option>
+                <option value="seoul" data-i18n="seoul">首尔</option>
+                <option value="singapore" data-i18n="singapore">新加坡</option>
+                <option value="bangkok" data-i18n="bangkok">曼谷</option>
+                <option value="dubai" data-i18n="dubai">迪拜</option>
+                <option value="mumbai" data-i18n="mumbai">孟买</option>
+                <option value="hongkong" data-i18n="hongkong">香港</option>
+                
+                <option value="" disabled class="city-category">欧洲</option>
+                <option value="london" data-i18n="london">伦敦</option>
+                <option value="paris" data-i18n="paris">巴黎</option>
+                <option value="moscow" data-i18n="moscow">莫斯科</option>
+                <option value="berlin" data-i18n="berlin">柏林</option>
+                <option value="rome" data-i18n="rome">罗马</option>
+                <option value="madrid" data-i18n="madrid">马德里</option>
+                <option value="istanbul" data-i18n="istanbul">伊斯坦布尔</option>
+                
+                <option value="" disabled class="city-category">北美洲</option>
+                <option value="newyork" data-i18n="newyork">纽约</option>
+                <option value="losangeles" data-i18n="losangeles">洛杉矶</option>
+                <option value="toronto" data-i18n="toronto">多伦多</option>
+                <option value="mexicocity" data-i18n="mexicocity">墨西哥城</option>
+                
+                <option value="" disabled class="city-category">南美洲</option>
+                <option value="riodejaneiro" data-i18n="riodejaneiro">里约热内卢</option>
+                
+                <option value="" disabled class="city-category">非洲</option>
+                <option value="cairo" data-i18n="cairo">开罗</option>
+                <option value="capetown" data-i18n="capetown">开普敦</option>
+                
+                <option value="" disabled class="city-category">大洋洲</option>
+                <option value="sydney" data-i18n="sydney">悉尼</option>
+              </select>
             </div>
+            
+            <!-- 天气选择 -->
             <div class="form-group">
-              <md-filled-select label="火箭类型" id="rocket-type" data-i18n-attr='{"label":"rocketType"}'>
-                <md-select-option value="1">
-                  <div slot="headline" data-i18n="cz5">长征五号</div>
-                </md-select-option>
-                <md-select-option value="2">
-                  <div slot="headline" data-i18n="cz7">长征七号</div>
-                </md-select-option>
-                <md-select-option value="3">
-                  <div slot="headline" data-i18n="cz11">长征十一号</div>
-                </md-select-option>
-              </md-filled-select>
+              <label for="weather-select" data-i18n="weather">天气状况</label>
+              <select id="weather-select" class="weather-select">
+                <option value="clear" data-i18n="weatherClear">晴朗</option>
+                <option value="cloudy" data-i18n="weatherCloudy">多云</option>
+                <option value="rainy" data-i18n="weatherRainy">雨天</option>
+                <option value="windy" data-i18n="weatherWindy">大风</option>
+                <option value="thunder" data-i18n="weatherThunder">雷暴</option>
+              </select>
             </div>
             <div class="form-group button-group">
               <md-filled-button id="launch-btn" data-i18n="launchRocket">发射火箭</md-filled-button>
               <md-outlined-button id="reset-btn" data-i18n="reset">重置</md-outlined-button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 火箭详情卡片 -->
+        <div class="card rocket-details-card" id="rocket-details-card">
+          <div class="card-header">
+            <h2 data-i18n="rocketDetails">火箭详情</h2>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-content">
+            <div class="rocket-detail-item">
+              <span class="detail-label" data-i18n="rocketName">火箭名称: </span>
+              <span id="rocket-name-display">--</span>
+            </div>
+            <div class="rocket-detail-item">
+              <span class="detail-label" data-i18n="payload">有效载荷: </span>
+              <span id="rocket-payload">--</span>
+            </div>
+            <div class="rocket-detail-item">
+              <span class="detail-label" data-i18n="firstFlight">首飞时间: </span>
+              <span id="rocket-first-flight">--</span>
+            </div>
+            <div class="rocket-detail-item">
+              <span class="detail-label" data-i18n="status">状态: </span>
+              <span id="rocket-status-detail">--</span>
+            </div>
+            <div class="rocket-detail-item">
+              <span class="detail-label" data-i18n="country">国家/机构: </span>
+              <span id="rocket-country">--</span>
+            </div>
+            <div class="rocket-detail-item">
+              <span class="detail-label" data-i18n="speed">最大速度: </span>
+              <span id="rocket-speed-detail">--</span>
+            </div>
+            <div class="rocket-detail-item">
+              <span class="detail-label" data-i18n="altitude">最大高度: </span>
+              <span id="rocket-altitude-detail">--</span>
             </div>
           </div>
         </div>
@@ -91,6 +250,24 @@
               <span data-i18n="currentLocation">当前位置: </span>
               <span id="current-location">--</span>
             </div>
+            <!-- 天气状况显示 -->
+            <div class="status-item">
+              <span class="status-icon" id="weather-icon">☀️</span>
+              <span data-i18n="weatherCondition">天气状况: </span>
+              <span id="weather-condition" data-i18n="weatherClear">晴朗</span>
+            </div>
+            <div class="status-item">
+              <span class="status-icon">⚠️</span>
+              <span data-i18n="weatherImpact">天气影响: </span>
+              <span id="weather-impact" data-i18n="impactNone">无影响</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 天气警告卡片 -->
+        <div class="card weather-warning-card" id="weather-warning-card" style="display: none;">
+          <div class="card-header warning-header">
+            <h2>⚠️ <span data-i18n="weatherWarning">天气警告: 当前天气条件可能影响发射安全</span></h2>
           </div>
         </div>
       </div>
