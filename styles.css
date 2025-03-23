@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans:wght@400;500;700&display=swap');
+
+:root {
+  --primary-color: #006874;
+  --primary-light: #a2eeff;
+  --primary-dark: #001f24;
+  --secondary-color: #4a6267;
+  --secondary-light: #cde7ec;
+  --secondary-dark: #051f23;
+  --surface-color: #fafdfd;
+  --text-color: #191c1d;
+  --error-color: #ba1a1a;
+  --success-color: #146c2e;
+  --warning-color: #b86e00;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f5f5f5;
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Noto Sans', 'Noto Sans SC', 'Noto Sans JP', sans-serif;
+}
+
+header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.language-selector {
+  margin-left: 20px;
+}
+
+#language-select {
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  background-color: white;
+  color: var(--primary-color);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+main {
+  padding: 20px;
+  flex: 1;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.control-panel {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.map-container {
+  flex: 2;
+  min-width: 500px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+}
+
+.card-header {
+  padding: 16px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--primary-color);
+}
+
+.card-divider {
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.card-content {
+  padding: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+md-filled-text-field, md-filled-select {
+  width: 100%;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.status-card .status-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.status-card .status-icon {
+  margin-right: 8px;
+  font-size: 1.2rem;
+}
+
+.map-card {
+  height: 100%;
+}
+
+#map {
+  height: 500px;
+  width: 100%;
+}
+
+footer {
+  text-align: center;
+  padding: 16px;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* 语言特定样式 */
+html[lang="zh-CN"] {
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+html[lang="en-US"] {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+html[lang="ja-JP"] {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .map-container {
+    order: -1;
+  }
+  
+  #map {
+    height: 300px;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .language-selector {
+    margin-left: 0;
+  }
+}

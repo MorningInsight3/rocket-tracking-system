@@ -1,0 +1,19 @@
+{
+  "name": "rocket-tracking-system",
+  "version": "1.0.0",
+  "description": "火箭发射与侦测系统",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@material/web": "^1.1.1",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "vite": "^4.4.9"
+  }
+}

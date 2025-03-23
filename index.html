@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>火箭发射与侦测系统</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./main.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1 data-i18n="appTitle">火箭发射与侦测系统</h1>
+      <div class="language-selector">
+        <select id="language-select">
+          <option value="zh-CN">中文</option>
+          <option value="en-US">English</option>
+          <option value="ja-JP">日本語</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="control-panel">
+        <div class="card">
+          <div class="card-header">
+            <h2 data-i18n="controlPanel">控制面板</h2>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-content">
+            <div class="form-group">
+              <md-filled-text-field label="火箭名称" id="rocket-name" data-i18n-attr='{"label":"rocketName"}'></md-filled-text-field>
+            </div>
+            <div class="form-group">
+              <md-filled-text-field label="发射地点" id="launch-site" data-i18n-attr='{"label":"launchSite"}'></md-filled-text-field>
+            </div>
+            <div class="form-group">
+              <md-filled-text-field label="目标地点" id="target-site" data-i18n-attr='{"label":"targetSite"}'></md-filled-text-field>
+            </div>
+            <div class="form-group">
+              <md-filled-select label="火箭类型" id="rocket-type" data-i18n-attr='{"label":"rocketType"}'>
+                <md-select-option value="1">
+                  <div slot="headline" data-i18n="cz5">长征五号</div>
+                </md-select-option>
+                <md-select-option value="2">
+                  <div slot="headline" data-i18n="cz7">长征七号</div>
+                </md-select-option>
+                <md-select-option value="3">
+                  <div slot="headline" data-i18n="cz11">长征十一号</div>
+                </md-select-option>
+              </md-filled-select>
+            </div>
+            <div class="form-group button-group">
+              <md-filled-button id="launch-btn" data-i18n="launchRocket">发射火箭</md-filled-button>
+              <md-outlined-button id="reset-btn" data-i18n="reset">重置</md-outlined-button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card status-card">
+          <div class="card-header">
+            <h2 data-i18n="statusInfo">状态信息</h2>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-content">
+            <div class="status-item">
+              <span class="status-icon">🚀</span>
+              <span data-i18n="status">状态: </span>
+              <span id="rocket-status" data-i18n="waitingLaunch">待发射</span>
+            </div>
+            <div class="status-item">
+              <span class="status-icon">⚡</span>
+              <span data-i18n="speed">速度: </span>
+              <span id="rocket-speed">0 km/h</span>
+            </div>
+            <div class="status-item">
+              <span class="status-icon">📏</span>
+              <span data-i18n="altitude">高度: </span>
+              <span id="rocket-altitude">0 km</span>
+            </div>
+            <div class="status-item">
+              <span class="status-icon">⏱️</span>
+              <span data-i18n="flightTime">飞行时间: </span>
+              <span id="flight-time">00:00:00</span>
+            </div>
+            <div class="status-item">
+              <span class="status-icon">📍</span>
+              <span data-i18n="currentLocation">当前位置: </span>
+              <span id="current-location">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="map-container">
+        <div class="card map-card">
+          <div class="card-header">
+            <h2 data-i18n="trackingMap">火箭轨迹追踪</h2>
+          </div>
+          <div class="card-divider"></div>
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
+
+    <md-dialog id="launch-dialog">
+      <div slot="headline" data-i18n="launchConfirm">发射确认</div>
+      <div slot="content" data-i18n="launchConfirmMsg">您确定要发射火箭吗？</div>
+      <div slot="actions">
+        <md-text-button id="cancel-launch" data-i18n="cancel">取消</md-text-button>
+        <md-text-button id="confirm-launch" data-i18n="confirm">确认</md-text-button>
+      </div>
+    </md-dialog>
+  </main>
+
+  <footer>
+    <p data-i18n="footer">© 2025 火箭发射与侦测系统 - 技术支持</p>
+  </footer>
+</body>
+</html>
